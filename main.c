@@ -18,12 +18,10 @@ void Quit() {
 }
 
 int main() {
-  SDL_Event event;
   emu_init();
-  SDL_Delay(1000);
-  cpu.operand.BYTE.high = 0x00;
-  cpu.operand.BYTE.low = 0xE0;
-  cpu_execute();
+  unsigned int instructionpart1;
+  unsigned int instructionpart2;
+  SDL_Event event;
   while (1) {
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
@@ -31,6 +29,12 @@ int main() {
           Quit();
           break;
       }
+      //TODO: Make it run parallel to PollEvent()
+      scanf("%X", &instructionpart1);
+      scanf("%X", &instructionpart2);
+      cpu.operand.BYTE.high = instructionpart1;
+      cpu.operand.BYTE.low = instructionpart2;
+      cpu_execute();
     }
   }
   return 0;
