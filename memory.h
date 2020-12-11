@@ -9,9 +9,10 @@
 
 byte *memory;
 
-int memory_init(int memorysize);
+void memory_init(int memorysize);
 byte read_memory(register int address);
 void write_memory(register word address, register byte value);
+void memory_deinit(byte* memory);
 
 
 #endif //CHIP8EMU_MEMORY_H

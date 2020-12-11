@@ -19,4 +19,7 @@ typedef struct {
 
 chip8regs cpu;
 
+void cpu_execute();
+void cpu_reset();
+
 #endif //CHIP8EMU_CPU_H

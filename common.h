@@ -5,6 +5,10 @@
 #ifndef CHIP8EMU_COMMON_H
 #define CHIP8EMU_COMMON_H
 
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+
 typedef unsigned char byte;
 
 typedef union {
