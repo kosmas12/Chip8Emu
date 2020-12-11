@@ -4,17 +4,17 @@
 
 #include "screen.h"
 
-//#if BIG_ENDIAN
+#if BIG_ENDIAN
 Uint32 Rmask = 0xff000000;
 Uint32 Gmask = 0x00ff0000;
 Uint32 Bmask = 0x0000ff00;
 Uint32 Amask = 0x000000ff;
-/*#else
-Uint32 rmask = (Uint32)0x000000ff;
-Uint32 gmask = (Uint32)0x0000ff00;
-Uint32 bmask = (Uint32)0x00ff0000;
-Uint32 amask = (Uint32)0xff000000;
-#endif*/
+#else
+Uint32 rmask = 0x000000ff;
+Uint32 gmask = 0x0000ff00;
+Uint32 bmask = 0x00ff0000;
+Uint32 amask = 0xff000000;
+#endif
 
 SDL_Rect screenrect = {0, 0, 64, 32};
 SDL_Rect centerScreenRect = {320, 240, 64, 32}; //TODO: Fix x and y to center virtual screen
