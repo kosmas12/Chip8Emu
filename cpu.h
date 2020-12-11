@@ -28,5 +28,6 @@ void cpu_reset();
 void spointer_init();
 void pcounter_init();
 void rpl_init();
+void ret();
 
 #endif //CHIP8EMU_CPU_H

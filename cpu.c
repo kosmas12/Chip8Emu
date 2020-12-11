@@ -4,6 +4,7 @@
 
 #include "cpu.h"
 #include "screen.h"
+#include "memory.h"
 
 int cpu_running = 1;
 int cpu_paused = 2;
@@ -12,6 +13,13 @@ int cpu_trace = 4;
 int cpu_step = 5;
 int cpu_stopped = 0;
 int cpu_operationtime = 1000; // CPU tick length in nanoseconds
+
+void ret() {
+  cpu.spointer.WORD--;
+  cpu.pcounter.BYTE.high = read_memory(cpu.spointer.WORD);
+  cpu.spointer.WORD--;
+  cpu.pcounter.BYTE.low = read_memory(cpu.spointer.WORD);
+}
 
 void cpu_execute() {
   byte x;
@@ -29,14 +37,24 @@ void cpu_execute() {
   int xcor;
   int ycor;
 
+  printf("Executing instruction ");
   switch (cpu.operand.BYTE.high & 0xF0) {
     case 0x00:
       switch (cpu.operand.BYTE.low) {
         case 0xE0:
-          printf("Received instruction 0x00E0 - CLS\n");
+          printf("0x00E0 - CLS\n");
           clear_screen();
           break;
+        case 0xEE:
+          printf("0x00EE - RET\n");
+          ret();
+          break;
+        default:
+          printf("Unimplemented Instruction\n");
       }
+      break;
+    default:
+      printf("Unimplemented Instruction\n");
       break;
   }
 }
