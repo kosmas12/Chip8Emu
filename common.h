@@ -24,5 +24,4 @@ typedef union {
     }BYTE;
 }word;
 
-
 #endif //CHIP8EMU_COMMON_H
