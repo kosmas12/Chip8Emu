@@ -6,7 +6,7 @@ void emu_init() {
   SDL_Init(SDL_INIT_EVERYTHING);
   emuWindow = SDL_CreateWindow("Chip8Emu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
   cpu_reset();
-  memory_init(4192);
+  memory_init(4096);
   screen_init();
 }
 
