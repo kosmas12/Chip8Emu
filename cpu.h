@@ -14,12 +14,19 @@ typedef struct {
     byte stimer;
     byte dtimer;
     word pcounter;
+    word prevpcounter; // Last program counter address
     word operand;
+    byte rplregstorage[16];
+    char *opcodestr; // Opcode stored as string
+    int state;
 }chip8regs;
 
 chip8regs cpu;
 
 void cpu_execute();
 void cpu_reset();
+void spointer_init();
+void pcounter_init();
+void rpl_init();
 
 #endif //CHIP8EMU_CPU_H

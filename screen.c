@@ -16,12 +16,12 @@ Uint32 bmask = 0x00ff0000;
 Uint32 amask = 0xff000000;
 #endif
 
-SDL_Rect screenrect = {0, 0, 64, 32};
-SDL_Rect centerScreenRect = {285, 200, 64, 32}; //TODO: Fix x and y to center virtual screen
+SDL_Rect screenrect = {0, 0, 320, 240};
+SDL_Rect centerScreenRect = {155, 120, 320, 240};
 
 // For now do nothing other than fill the virtual screen with white
 void screen_init() {
-  screen = SDL_CreateRGBSurface(0, 128, 64, 32, Rmask, Gmask, Bmask, Amask); //TODO: Increase virtual screen size
+  screen = SDL_CreateRGBSurface(0, 320, 240, 32, Rmask, Gmask, Bmask, Amask);
   SDL_FillRect(screen, &screenrect, SDL_MapRGB(screen->format, 255, 255, 255));
   SDL_BlitSurface(screen, NULL, SDL_GetWindowSurface(emuWindow), &centerScreenRect);
   SDL_UpdateWindowSurface(emuWindow);
