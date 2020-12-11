@@ -34,8 +34,7 @@ void cpu_execute() {
       switch (cpu.operand.BYTE.low) {
         case 0xE0:
           printf("Received instruction 0x00E0 - CLS\n");
-          SDL_FillRect(emuWindowSurface, NULL, SDL_MapRGB(emuWindowSurface->format, 0, 0, 0));
-          SDL_UpdateWindowSurface(emuWindow);
+          clear_screen();
           break;
       }
       break;

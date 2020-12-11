@@ -10,6 +10,7 @@
 SDL_Window *emuWindow;
 SDL_Surface *emuWindowSurface;
 void screen_init();
+void clear_screen();
 void screen_deinit();
 
 #endif //CHIP8EMU_SCREEN_H

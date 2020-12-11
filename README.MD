@@ -2,8 +2,7 @@
 
 This is a simple emulator for the CHIP 8 that I am making for fun.
 Currently it only initializes the CPU and RAM
-and then creates a window to display things
-(nothing for now other than a small white part). 
+and then triggers a CLS instruction after 1 second. 
 It only has some memory that can be
 of variable size, and it has memory reading and writing functions.
 It also has registers for the CPU and a reset

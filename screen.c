@@ -26,6 +26,11 @@ void screen_init() {
   SDL_UpdateWindowSurface(emuWindow);
 }
 
+void clear_screen() {
+  SDL_FillRect(emuWindowSurface, NULL, SDL_MapRGB(emuWindowSurface->format, 0, 0, 0));
+  SDL_UpdateWindowSurface(emuWindow);
+}
+
 void screen_deinit() {
   SDL_DestroyWindow(emuWindow);
 }
