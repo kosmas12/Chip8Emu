@@ -9,10 +9,10 @@ int memory_init(int memorysize) {
   return memory != NULL;
 }
 
-inline byte read_memory(register int address) {
+byte read_memory(register int address) {
   return memory[address];
 }
 
-inline void write_memory(register word address, register byte value) {
+void write_memory(register word address, register byte value) {
   memory[address.WORD] = value;
 }
