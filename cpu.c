@@ -3,6 +3,7 @@
 //
 
 #include "cpu.h"
+#include "screen.h"
 
 int cpu_running = 1;
 int cpu_paused = 2;
@@ -29,7 +30,15 @@ void cpu_execute() {
   int ycor;
 
   switch (cpu.operand.BYTE.high & 0xF0) {
-    break;
+    case 0x00:
+      switch (cpu.operand.BYTE.low) {
+        case 0xE0:
+          printf("Received instruction 0x00E0 - CLS\n");
+          SDL_FillRect(emuWindowSurface, NULL, SDL_MapRGB(emuWindowSurface->format, 0, 0, 0));
+          SDL_UpdateWindowSurface(emuWindow);
+          break;
+      }
+      break;
   }
 }
 

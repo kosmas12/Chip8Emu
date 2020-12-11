@@ -8,7 +8,7 @@
 #include <SDL2/SDL.h>
 
 SDL_Window *emuWindow;
-SDL_Surface *screen;
+SDL_Surface *emuWindowSurface;
 void screen_init();
 void screen_deinit();
 

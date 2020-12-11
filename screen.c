@@ -2,6 +2,7 @@
 // Created by kosmas on 11/12/20.
 //
 
+#include <SDL2/SDL.h>
 #include "screen.h"
 
 #if BIG_ENDIAN
@@ -16,18 +17,15 @@ Uint32 bmask = 0x00ff0000;
 Uint32 amask = 0xff000000;
 #endif
 
-SDL_Rect screenrect = {0, 0, 320, 240};
-SDL_Rect centerScreenRect = {155, 120, 320, 240};
+SDL_Window *emuWindow;
 
 // For now do nothing other than fill the virtual screen with white
 void screen_init() {
-  screen = SDL_CreateRGBSurface(0, 320, 240, 32, Rmask, Gmask, Bmask, Amask);
-  SDL_FillRect(screen, &screenrect, SDL_MapRGB(screen->format, 255, 255, 255));
-  SDL_BlitSurface(screen, NULL, SDL_GetWindowSurface(emuWindow), &centerScreenRect);
+  emuWindowSurface = SDL_GetWindowSurface(emuWindow);
+  SDL_FillRect(emuWindowSurface, NULL, SDL_MapRGB(emuWindowSurface->format, 255, 255, 255));
   SDL_UpdateWindowSurface(emuWindow);
 }
 
 void screen_deinit() {
-  SDL_FreeSurface(screen);
   SDL_DestroyWindow(emuWindow);
 }

@@ -20,6 +20,10 @@ void Quit() {
 int main() {
   SDL_Event event;
   emu_init();
+  SDL_Delay(1000);
+  cpu.operand.BYTE.high = 0x00;
+  cpu.operand.BYTE.low = 0xE0;
+  cpu_execute();
   while (1) {
     while (SDL_PollEvent(&event)) {
       switch (event.type) {

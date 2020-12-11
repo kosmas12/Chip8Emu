@@ -18,7 +18,7 @@ typedef struct {
     word operand;
     byte rplregstorage[16];
     char *opcodestr; // Opcode stored as string
-    int state;
+    int state; // Current CPU state
 }chip8regs;
 
 chip8regs cpu;
