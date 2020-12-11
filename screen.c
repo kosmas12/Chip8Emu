@@ -17,7 +17,7 @@ Uint32 amask = 0xff000000;
 #endif
 
 SDL_Rect screenrect = {0, 0, 64, 32};
-SDL_Rect centerScreenRect = {320, 240, 64, 32}; //TODO: Fix x and y to center virtual screen
+SDL_Rect centerScreenRect = {285, 200, 64, 32}; //TODO: Fix x and y to center virtual screen
 
 // For now do nothing other than fill the virtual screen with white
 void screen_init() {
