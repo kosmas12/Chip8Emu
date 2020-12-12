@@ -1,6 +1,7 @@
 #include "memory.h"
 #include "cpu.h"
 #include "screen.h"
+#include <string.h>
 
 void emu_init() {
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -37,12 +38,20 @@ int load_rom(char *filename, int offset) {
   return status;
 }
 
-int main() {
+int main(int argc, char **argv) {
   emu_init();
   unsigned int instructionpart1;
   unsigned int instructionpart2;
   SDL_Event event;
-  load_rom("test_opcode.ch8", 0x200);
+  if(argc > 1) {
+    if (strcmp(argv[1], "interactive") == 0) {
+      printf("Booting into interactive mode\n");
+    }
+  }
+  else {
+    printf("Booting into ROM mode\n");
+    load_rom("test_opcode.ch8", 0x200);
+  }
   while (1) {
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
@@ -50,11 +59,15 @@ int main() {
           Quit();
           break;
       }
-      /*TODO: Make it run parallel to PollEvent()
-      scanf("%X", &instructionpart1);
-      scanf("%X", &instructionpart2);
-      cpu.operation.BYTE.high = instructionpart1;
-      cpu.operation.BYTE.low = instructionpart2;*/
+      if(argc > 1) {
+        if (strcmp(argv[1], "interactive") == 0) {
+          //TODO: Make it run parallel to PollEvent()
+          scanf("%X", &instructionpart1);
+          scanf("%X", &instructionpart2);
+          cpu.operation.BYTE.high = instructionpart1;
+          cpu.operation.BYTE.low = instructionpart2;
+        }
+      }
       cpu_execute();
     }
   }

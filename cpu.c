@@ -23,11 +23,17 @@ void ret() {
 
 void jmp(unsigned int address) {
   cpu.pcounter.WORD = address;
+  printf("CPU Program Counter set to address %X\n", address);
 }
 
 void ld(byte reg, byte value) {
-  cpu.registers[reg] = value;
-  printf("Value of register %X: %X\n", reg, cpu.registers[reg]);
+    cpu.registers[reg] = value;
+    printf("Set general-purpose register %X to %X\n", reg, value);
+}
+
+void ldi(unsigned short value) {
+  cpu.indexreg.WORD = value;
+  printf("Set index register to %X\n", value);
 }
 
 void cpu_execute() {
@@ -85,6 +91,10 @@ void cpu_execute() {
       printf("0x6%X - LD value %X to register %X\n", fulloperand, twodigitoperand2, operandp1/0x100);
       ld(operandp1/0x100, twodigitoperand2);
       break;
+    case 0xA0:
+      printf("0xA%X - LD value %X to index register\n", fulloperand, fulloperand);
+      ldi(fulloperand);
+      break;
     default:
       printf("0x%X - Unimplemented Instruction\n", cpu.operation.WORD);
       break;
@@ -130,6 +140,7 @@ void cpu_reset() {
   spointer_init();
   pcounter_init();
   timers_init();
+  indexreg_init();
   cpu.operation.WORD = 0;
   cpu.state = cpu_paused;
   cpu.opcodestr = (char*) malloc(200);
