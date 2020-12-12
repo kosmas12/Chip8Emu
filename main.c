@@ -50,15 +50,11 @@ int main() {
           Quit();
           break;
       }
-      //TODO: Make it run parallel to PollEvent()
+      /*TODO: Make it run parallel to PollEvent()
       scanf("%X", &instructionpart1);
       scanf("%X", &instructionpart2);
-      /*cpu.operation.BYTE.high = read_memory(cpu.pcounter.WORD);
-      cpu.pcounter.WORD++;
-      cpu.operation.BYTE.low = read_memory(cpu.pcounter.WORD);
-      cpu.pcounter.WORD++;*/
       cpu.operation.BYTE.high = instructionpart1;
-      cpu.operation.BYTE.low = instructionpart2;
+      cpu.operation.BYTE.low = instructionpart2;*/
       cpu_execute();
     }
   }

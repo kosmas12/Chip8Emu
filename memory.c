@@ -16,13 +16,7 @@ void memory_init(int memorysize) {
 }
 
 byte read_memory(register int address) {
-  int returning;
-#ifdef LITTLE_ENDIAN
-  returning = (memory[address]>>8) | (memory[address]<<8);
-#else
-  returning = memory[address];
-#endif
-  return returning;
+  return memory[address];
 }
 
 void write_memory(register word address, register byte value) {

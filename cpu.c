@@ -41,6 +41,11 @@ void cpu_execute() {
   int xcor;
   int ycor;
 
+  cpu.operation.BYTE.high = read_memory(cpu.pcounter.WORD);
+  cpu.pcounter.WORD++;
+  cpu.operation.BYTE.low = read_memory(cpu.pcounter.WORD);
+  cpu.pcounter.WORD++;
+
   unsigned int fulloperand = cpu.operation.WORD & 0x0FFF;
 
   printf("Executing instruction ");

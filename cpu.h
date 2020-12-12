@@ -30,8 +30,5 @@ void pcounter_init();
 void rpl_init();
 void ret();
 unsigned int address;
-unsigned int addrp1;
-unsigned int addrp2;
-unsigned int addrp3;
 
 #endif //CHIP8EMU_CPU_H

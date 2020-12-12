@@ -22,7 +22,7 @@ SDL_Window *emuWindow;
 // For now do nothing other than fill the virtual screen with white
 void screen_init() {
   emuWindowSurface = SDL_GetWindowSurface(emuWindow);
-  SDL_FillRect(emuWindowSurface, NULL, SDL_MapRGB(emuWindowSurface->format, 255, 255, 255));
+  SDL_FillRect(emuWindowSurface, NULL, SDL_MapRGB(emuWindowSurface->format, 0, 0, 0));
   SDL_UpdateWindowSurface(emuWindow);
 }
 
