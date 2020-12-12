@@ -25,6 +25,11 @@ void jmp(unsigned int address) {
   cpu.pcounter.WORD = address;
 }
 
+void ld(byte reg, byte value) {
+  cpu.registers[reg] = value;
+  printf("Value of register %X: %X\n", reg, cpu.registers[reg]);
+}
+
 void cpu_execute() {
   byte x;
   byte y;
@@ -49,6 +54,11 @@ void cpu_execute() {
   cpu.pcounter.WORD++;
 
   unsigned int fulloperand = cpu.operation.WORD & 0x0FFF;
+  unsigned int operandp1 = cpu.operation.WORD & 0x0F00;
+  unsigned int operandp2 = cpu.operation.WORD & 0x00F0;
+  unsigned int operandp3 = cpu.operation.WORD & 0x000F;
+  unsigned int twodigitoperand1 = cpu.operation.WORD & 0x0FF0;
+  unsigned int twodigitoperand2 = cpu.operation.WORD & 0x00FF;
 
   printf("Executing instruction ");
   switch (cpu.operation.BYTE.high & 0xF0) {
@@ -64,14 +74,20 @@ void cpu_execute() {
           break;
         default:
           printf("0x00%X - Unimplemented Instruction\n", cpu.operation.BYTE.low);
+          break;
       }
-      break;
-    default:
-      printf("0x%X%X - Unimplemented Instruction\n", cpu.operation.BYTE.high & 0xF0, cpu.operation.BYTE.low);
       break;
     case 0x10:
       printf("0x1%X - JMP to address %X\n", fulloperand, fulloperand);
       jmp(fulloperand);
+      break;
+    case 0x60:
+      printf("0x6%X - LD value %X to register %X\n", fulloperand, twodigitoperand2, operandp1/0x100);
+      ld(operandp1/0x100, twodigitoperand2);
+      break;
+    default:
+      printf("0x%X - Unimplemented Instruction\n", cpu.operation.WORD);
+      break;
   }
 }
 
