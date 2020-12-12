@@ -37,6 +37,11 @@ void cpu_execute() {
   int xcor;
   int ycor;
 
+  cpu.operand.BYTE.high = read_memory(cpu.pcounter.WORD);
+  cpu.pcounter.WORD++;
+  cpu.operand.BYTE.low = read_memory(cpu.pcounter.WORD);
+  cpu.pcounter.WORD++;
+
   printf("Executing instruction ");
   switch (cpu.operand.BYTE.high & 0xF0) {
     case 0x00:
@@ -50,11 +55,11 @@ void cpu_execute() {
           ret();
           break;
         default:
-          printf("Unimplemented Instruction\n");
+          printf("0x00%X - Unimplemented Instruction\n", cpu.operand.BYTE.low);
       }
       break;
     default:
-      printf("Unimplemented Instruction\n");
+      printf("0x%X%X - Unimplemented Instruction\n", cpu.operand.BYTE.high, cpu.operand.BYTE.low);
       break;
   }
 }
