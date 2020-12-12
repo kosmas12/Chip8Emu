@@ -21,6 +21,10 @@ void ret() {
   cpu.pcounter.BYTE.low = read_memory(cpu.spointer.WORD);
 }
 
+void jmp(unsigned int address) {
+  cpu.pcounter.WORD = address;
+}
+
 void cpu_execute() {
   byte x;
   byte y;
@@ -37,15 +41,12 @@ void cpu_execute() {
   int xcor;
   int ycor;
 
-  cpu.operand.BYTE.high = read_memory(cpu.pcounter.WORD);
-  cpu.pcounter.WORD++;
-  cpu.operand.BYTE.low = read_memory(cpu.pcounter.WORD);
-  cpu.pcounter.WORD++;
+  unsigned int fulloperand = cpu.operation.WORD & 0x0FFF;
 
   printf("Executing instruction ");
-  switch (cpu.operand.BYTE.high & 0xF0) {
+  switch (cpu.operation.BYTE.high & 0xF0) {
     case 0x00:
-      switch (cpu.operand.BYTE.low) {
+      switch (cpu.operation.BYTE.low) {
         case 0xE0:
           printf("0x00E0 - CLS\n");
           clear_screen();
@@ -55,12 +56,15 @@ void cpu_execute() {
           ret();
           break;
         default:
-          printf("0x00%X - Unimplemented Instruction\n", cpu.operand.BYTE.low);
+          printf("0x00%X - Unimplemented Instruction\n", cpu.operation.BYTE.low);
       }
       break;
     default:
-      printf("0x%X%X - Unimplemented Instruction\n", cpu.operand.BYTE.high, cpu.operand.BYTE.low);
+      printf("0x%X%X - Unimplemented Instruction\n", cpu.operation.BYTE.high & 0xF0, cpu.operation.BYTE.low);
       break;
+    case 0x10:
+      printf("0x1%X - JMP to address %X\n", fulloperand, fulloperand);
+      jmp(fulloperand);
   }
 }
 
@@ -103,7 +107,7 @@ void cpu_reset() {
   spointer_init();
   pcounter_init();
   timers_init();
-  cpu.operand.WORD = 0;
+  cpu.operation.WORD = 0;
   cpu.state = cpu_paused;
   cpu.opcodestr = (char*) malloc(200);
 }

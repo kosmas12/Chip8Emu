@@ -21,7 +21,7 @@ int load_rom(char *filename, int offset) {
   FILE *file;
   int status = 1;
 
-  file = fopen(filename, "r");
+  file = fopen(filename, "r"); // rb is unnecessary because the ROM itself is already binary
   if (file == NULL) {
     printf("Could not load ROM: %s\n", filename);
     status = 0;
@@ -42,8 +42,7 @@ int main() {
   unsigned int instructionpart1;
   unsigned int instructionpart2;
   SDL_Event event;
-  load_rom("test_opcode.ch8", 0);
-  cpu_execute();
+  load_rom("test_opcode.ch8", 0x200);
   while (1) {
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
@@ -51,11 +50,16 @@ int main() {
           Quit();
           break;
       }
-      /*TODO: Make it run parallel to PollEvent()
+      //TODO: Make it run parallel to PollEvent()
       scanf("%X", &instructionpart1);
       scanf("%X", &instructionpart2);
-      cpu.operand.BYTE.high = instructionpart1;
-      cpu.operand.BYTE.low = instructionpart2;*/
+      /*cpu.operation.BYTE.high = read_memory(cpu.pcounter.WORD);
+      cpu.pcounter.WORD++;
+      cpu.operation.BYTE.low = read_memory(cpu.pcounter.WORD);
+      cpu.pcounter.WORD++;*/
+      cpu.operation.BYTE.high = instructionpart1;
+      cpu.operation.BYTE.low = instructionpart2;
+      cpu_execute();
     }
   }
   return 0;

@@ -15,7 +15,7 @@ typedef struct {
     byte dtimer;
     word pcounter;
     word prevpcounter; // Last program counter address
-    word operand;
+    word operation;
     byte rplregstorage[16];
     char *opcodestr; // Opcode stored as string
     int state; // Current CPU state
@@ -29,5 +29,9 @@ void spointer_init();
 void pcounter_init();
 void rpl_init();
 void ret();
+unsigned int address;
+unsigned int addrp1;
+unsigned int addrp2;
+unsigned int addrp3;
 
 #endif //CHIP8EMU_CPU_H

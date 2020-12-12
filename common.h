@@ -14,12 +14,12 @@ typedef unsigned char byte;
 typedef union {
     unsigned short int WORD;
     struct {
-#ifdef BIG_ENDIAN
-        //On Big Endian architectures, the bytes are stored in the order of high to low
-          byte high, low;
-#else
+#ifdef LITTLE_ENDIAN
         //On Little Endian architectures, the bytes are stored in the order of low to high
         byte low, high;
+#else
+        //On Big Endian architectures, the bytes are stored in the order of high to low
+        byte high, low;
 #endif
     }BYTE;
 }word;
