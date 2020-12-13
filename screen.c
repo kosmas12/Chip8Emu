@@ -15,7 +15,9 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*/
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+Parts of the code have been copied from craigthomas' (Super)CHIP-8 emulator which can be found in https://github.com/craigthomas/Chip8C*/
 
 #include <SDL2/SDL.h>
 #include "screen.h"
@@ -48,6 +50,7 @@ void screen_init() {
 }
 
 void clear_screen() {
+  SDL_FillRect(screenDrawingSurface, NULL, SDL_MapRGB(screenDrawingSurface->format, 0, 0, 0));
   SDL_FillRect(emuWindowSurface, NULL, SDL_MapRGB(emuWindowSurface->format, 0, 0, 0));
   SDL_UpdateWindowSurface(emuWindow);
 }

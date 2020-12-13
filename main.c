@@ -15,7 +15,9 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*/
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+Parts of the code in this file have been copied from craigthomas' (Super)CHIP-8 emulator which can be found in https://github.com/craigthomas/Chip8C*/
 
 
 #include "memory.h"
@@ -81,7 +83,9 @@ int main(int argc, char **argv) {
         if (strcmp(argv[1], "interactive") == 0) {
           //TODO: Make it run parallel to PollEvent()
           scanf("%X", &instructionpart1);
+          printf("Part 1 of instruction: %X\n", instructionpart1);
           scanf("%X", &instructionpart2);
+          printf("Part 2 of instruction: %X\n", instructionpart2);
           cpu.operation.BYTE.high = instructionpart1;
           cpu.operation.BYTE.low = instructionpart2;
         }
