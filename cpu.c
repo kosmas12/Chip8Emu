@@ -71,6 +71,31 @@ void sne(byte reg, byte value) {
   }
 }
 
+void seregs(byte reg1, byte reg2) {
+  if (cpu.registers[reg1] == cpu.registers[reg2]) {
+    cpu.pcounter.WORD+=2;
+    printf("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
+  }
+  else {
+    printf("Registers not equal, not skipping instruction\n");
+  }
+}
+
+void add(byte reg, byte value) {
+  cpu.registers[reg] += value;
+  printf("Register %X now set to %X\n", reg, cpu.registers[reg]);
+}
+
+void sneregs(byte reg1, byte reg2) {
+  if (cpu.registers[reg1] != cpu.registers[reg2]) {
+    cpu.pcounter.WORD+=2;
+    printf("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
+  }
+  else {
+    printf("Registers equal, not skipping instruction\n");
+  }
+}
+
 void cpu_execute(int mode) {
   byte x;
   byte y;
@@ -166,6 +191,18 @@ void cpu_execute(int mode) {
     case 0x40:
       printf("0x4%X - Skip next instruction if register %X is Not Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
       sne(operandp1, twodigitoperand2);
+      break;
+    case 0x50:
+      printf("0x5%X0 - Skip next instruction if register %X is Equal to %X\n", twodigitoperand1, operandp1, operandp2);
+      seregs(operandp1, operandp2);
+      break;
+    case 0x70:
+      printf("0x7%X - ADD %X to register %X and store in that register\n", twodigitoperand2, operandp1);
+      add(operandp1, twodigitoperand2);
+      break;
+    case 0x90:
+      printf("0x9%X0 - Skip next instruction if register %X is Not Equal to register %X \n", twodigitoperand2, operandp1, operandp2);
+      sneregs(operandp1, operandp2);
       break;
     default:
       printf("0x%X - Unimplemented Instruction\n", cpu.operation.WORD);

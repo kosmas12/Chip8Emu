@@ -46,6 +46,9 @@ void rpl_init();
 void ret();
 void se(byte reg, byte value);
 void sne(byte reg, byte value);
+void seregs(byte reg1, byte reg2);
+void add (byte reg, byte value);
+void sneregs(byte reg1, byte reg2);
 unsigned int address;
 
 #endif //CHIP8EMU_CPU_H
