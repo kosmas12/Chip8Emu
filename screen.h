@@ -10,10 +10,10 @@
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 320
-#define SCALE_MULTIPLIER 10
 
 SDL_Window *emuWindow;
 SDL_Surface *emuWindowSurface;
+SDL_Surface *screenDrawingSurface;
 void screen_init();
 void clear_screen();
 void screen_deinit();
