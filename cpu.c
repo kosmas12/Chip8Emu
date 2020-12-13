@@ -60,8 +60,8 @@ void cpu_execute() {
   cpu.pcounter.WORD++;
 
   unsigned int fulloperand = cpu.operation.WORD & 0x0FFF;
-  unsigned int operandp1 = cpu.operation.WORD & 0x0F00;
-  unsigned int operandp2 = cpu.operation.WORD & 0x00F0;
+  unsigned int operandp1 = (cpu.operation.WORD & 0x0F00) / 0x100; // Dividing gives us exclusively the operand with no 0s after it
+  unsigned int operandp2 = (cpu.operation.WORD & 0x00F0) / 0x10;
   unsigned int operandp3 = cpu.operation.WORD & 0x000F;
   unsigned int twodigitoperand1 = cpu.operation.WORD & 0x0FF0;
   unsigned int twodigitoperand2 = cpu.operation.WORD & 0x00FF;
@@ -88,13 +88,40 @@ void cpu_execute() {
       jmp(fulloperand);
       break;
     case 0x60:
-      printf("0x6%X - LD value %X to register %X\n", fulloperand, twodigitoperand2, operandp1/0x100);
-      ld(operandp1/0x100, twodigitoperand2);
+      printf("0x6%X - LD value %X to register %X\n", fulloperand, twodigitoperand2, operandp1);
+      ld(operandp1, twodigitoperand2);
       break;
     case 0xA0:
       printf("0xA%X - LD value %X to index register\n", fulloperand, fulloperand);
       ldi(fulloperand);
       break;
+    case 0xD0:
+      x = cpu.operation.BYTE.high & 0xF;
+      y = (cpu.operation.BYTE.low & 0xF0) >> 4;
+      tempw.WORD = cpu.indexreg.WORD;
+      tempb = cpu.operation.BYTE.low & 0xF;
+      cpu.registers[0xF] = 0;
+      printf("0xD%X - DRW %d-byte sprite at location x %d and y %d\n", fulloperand, operandp3, operandp1, operandp2);
+      for (i = 0; i < (tempb); i++) {
+        tempb = read_memory(cpu.indexreg.WORD + i);
+        ycor = cpu.registers[y] + i;
+        ycor = ycor % WINDOW_HEIGHT;
+
+        for (j = 0; j < (cpu.operation.BYTE.high & 0xF); j++) {
+          xcor = cpu.registers[x] + j;
+          xcor = xcor % WINDOW_WIDTH;
+
+          color = (tempb & 0x80) ? 1 : 0;
+          currentcolor = screen_getpixelcolor(xcor, ycor);
+
+          cpu.registers[0xF] = (currentcolor && color) ? 1 : cpu.registers[0xF];
+          color = color ^ currentcolor;
+
+          screen_draw(xcor, ycor, color);
+          tempb = tempb << 1;
+        }
+      }
+        break;
     default:
       printf("0x%X - Unimplemented Instruction\n", cpu.operation.WORD);
       break;
