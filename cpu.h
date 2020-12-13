@@ -38,7 +38,7 @@ typedef struct {
 
 chip8regs cpu;
 
-void cpu_execute();
+void cpu_execute(int mode);
 void cpu_reset();
 void spointer_init();
 void pcounter_init();

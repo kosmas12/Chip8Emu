@@ -71,7 +71,7 @@ void sne(byte reg, byte value) {
   }
 }
 
-void cpu_execute() {
+void cpu_execute(int mode) {
   byte x;
   byte y;
   byte source;          // Source register
@@ -89,10 +89,12 @@ void cpu_execute() {
 
   cpu.prevpcounter = cpu.pcounter;
 
-  cpu.operation.BYTE.high = read_memory(cpu.pcounter.WORD);
-  cpu.pcounter.WORD++;
-  cpu.operation.BYTE.low = read_memory(cpu.pcounter.WORD);
-  cpu.pcounter.WORD++;
+  if (mode == 0) {
+    cpu.operation.BYTE.high = read_memory(cpu.pcounter.WORD);
+    cpu.pcounter.WORD++;
+    cpu.operation.BYTE.low = read_memory(cpu.pcounter.WORD);
+    cpu.pcounter.WORD++;
+  }
 
   unsigned int fulloperand = cpu.operation.WORD & 0x0FFF;
   unsigned int operandp1 = (cpu.operation.WORD & 0x0F00) / 0x100; // Dividing gives us exclusively the operand with no 0s after it
@@ -114,7 +116,7 @@ void cpu_execute() {
           ret();
           break;
         default:
-          printf("0x00%X - Unimplemented Instruction\n", cpu.operation.BYTE.low);
+          printf("0x00%X%X - Unimplemented Instruction\n", operandp2, operandp3);
           break;
       }
       break;

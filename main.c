@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
   emu_init();
   unsigned int instructionpart1;
   unsigned int instructionpart2;
+  int mode = 0;
   SDL_Event event;
   if(argc > 1) {
     if (strcmp(argv[1], "interactive") == 0) {
@@ -81,16 +82,15 @@ int main(int argc, char **argv) {
       }
       if(argc > 1) {
         if (strcmp(argv[1], "interactive") == 0) {
+          mode = 1;
           //TODO: Make it run parallel to PollEvent()
           scanf("%X", &instructionpart1);
-          printf("Part 1 of instruction: %X\n", instructionpart1);
           scanf("%X", &instructionpart2);
-          printf("Part 2 of instruction: %X\n", instructionpart2);
           cpu.operation.BYTE.high = instructionpart1;
           cpu.operation.BYTE.low = instructionpart2;
         }
       }
-      cpu_execute();
+      cpu_execute(mode);
     }
   }
   return 0;
