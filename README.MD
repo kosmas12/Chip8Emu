@@ -23,4 +23,6 @@ make
 
 # Credits
 While most of this emulator is coded by me, there are some parts that
-I have copied out of craigthomas' [great (Super)CHIP-8 emulator](https://github.com/craigthomas/Chip8C)
+I have copied out of craigthomas' 
+[great (Super)CHIP-8 emulator](https://github.com/craigthomas/Chip8C),
+like the implementation of the DRW instruction.
