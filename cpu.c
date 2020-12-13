@@ -102,12 +102,12 @@ void cpu_execute() {
       tempb = cpu.operation.BYTE.low & 0xF;
       cpu.registers[0xF] = 0;
       printf("0xD%X - DRW %d-byte sprite at location x %d and y %d\n", fulloperand, operandp3, operandp1, operandp2);
-      for (i = 0; i < (tempb); i++) {
+      for (i = 0; i < (cpu.operation.BYTE.low & 0xF); i++) {
         tempb = read_memory(cpu.indexreg.WORD + i);
         ycor = cpu.registers[y] + i;
         ycor = ycor % WINDOW_HEIGHT;
 
-        for (j = 0; j < (cpu.operation.BYTE.high & 0xF); j++) {
+        for (j = 0; j < 8; j++) {
           xcor = cpu.registers[x] + j;
           xcor = xcor % WINDOW_WIDTH;
 
