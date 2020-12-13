@@ -1,6 +1,21 @@
-//
-// Created by kosmas on 11/12/20.
-//
+/*Created by kosmas on 11/12/20.
+
+Chip8Emu - A CHIP-8 emulator made for fun
+Copyright (C) 2020  Kosmas Raptis
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*/
 
 #include "cpu.h"
 #include "screen.h"
@@ -36,6 +51,26 @@ void ldi(unsigned short value) {
   printf("Set index register to %X\n", value);
 }
 
+void se(byte reg, byte value) {
+  if (cpu.registers[reg] == value) {
+    cpu.pcounter.WORD+=2;
+    printf("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
+  }
+  else {
+    printf("Values not equal, not skipping instruction\n");
+  }
+}
+
+void sne(byte reg, byte value) {
+  if (cpu.registers[reg] != value) {
+    cpu.pcounter.WORD+=2;
+    printf("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
+  }
+  else {
+    printf("Values equal, not skipping instruction\n");
+  }
+}
+
 void cpu_execute() {
   byte x;
   byte y;
@@ -63,7 +98,7 @@ void cpu_execute() {
   unsigned int operandp1 = (cpu.operation.WORD & 0x0F00) / 0x100; // Dividing gives us exclusively the operand with no 0s after it
   unsigned int operandp2 = (cpu.operation.WORD & 0x00F0) / 0x10;
   unsigned int operandp3 = cpu.operation.WORD & 0x000F;
-  unsigned int twodigitoperand1 = cpu.operation.WORD & 0x0FF0;
+  unsigned int twodigitoperand1 = (cpu.operation.WORD & 0x0FF0) / 0x10;
   unsigned int twodigitoperand2 = cpu.operation.WORD & 0x00FF;
 
   printf("Executing instruction ");
@@ -121,7 +156,15 @@ void cpu_execute() {
           tempb = tempb << 1;
         }
       }
-        break;
+      break;
+    case 0x30:
+      printf("0x3%X - Skip next instruction if register %X is Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
+      se(operandp1, twodigitoperand2);
+      break;
+    case 0x40:
+      printf("0x4%X - Skip next instruction if register %X is Not Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
+      sne(operandp1, twodigitoperand2);
+      break;
     default:
       printf("0x%X - Unimplemented Instruction\n", cpu.operation.WORD);
       break;
