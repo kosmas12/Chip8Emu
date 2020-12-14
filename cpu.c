@@ -190,6 +190,16 @@ void skp(byte reg) {
   }
 }
 
+void sknp(byte reg) {
+  if (!isKeyPressed(cpu.registers[reg])) {
+    cpu.pcounter.WORD++;
+    printf("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
+  }
+  else {
+    printf("Key with value %X pressed, not skipping instruction\n", cpu.registers[reg]);
+  }
+}
+
 void cpu_execute(int mode) {
   byte x;
   byte y;
@@ -337,10 +347,14 @@ void cpu_execute(int mode) {
       }
       break;
     case 0xE0:
-      switch (cpu.operation.BYTE.low) {
+      switch (cpu.operation.BYTE.low & 0xFF) {
         case 0x9E:
-          printf("0x%X9E - Skip next instruction if key with the value of register %X is pressed\n", twodigitoperand1, operandp1);
+          printf("0xE%X9E - SKip next instruction if key with the value of register %X is Pressed\n", operandp1, operandp1);
           skp(operandp1);
+          break;
+        case 0xA1:
+          printf("0xE%XA1 - SKip next instruction if key with the value of register %X is Not Pressed\n", operandp1, operandp1);
+          sknp(operandp1);
           break;
       }
       break;
