@@ -49,6 +49,15 @@ void sne(byte reg, byte value);
 void seregs(byte reg1, byte reg2);
 void add (byte reg, byte value);
 void sneregs(byte reg1, byte reg2);
+void bit_or(byte reg1, byte reg2);
+void bit_and(byte reg1, byte reg2);
+void bit_xor(byte reg1, byte reg2);
+void addregs(byte reg1, byte reg2);
+void subregs(byte reg1, byte reg2);
+void shr(byte reg);
+void subnregs(byte reg1, byte reg2);
+void shl(byte reg);
+void skp(byte reg);
 unsigned int address;
 
 #endif //CHIP8EMU_CPU_H

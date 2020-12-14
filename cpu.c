@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #include "cpu.h"
 #include "screen.h"
 #include "memory.h"
+#include "input.h"
 
 int cpu_running = 1;
 int cpu_paused = 2;
@@ -96,6 +97,99 @@ void sneregs(byte reg1, byte reg2) {
   }
 }
 
+void bit_or(byte reg1, byte reg2) {
+  cpu.registers[reg1] = cpu.registers[reg1] | cpu.registers[reg2];
+  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+}
+
+void bit_and(byte reg1, byte reg2) {
+  cpu.registers[reg1] = cpu.registers[reg1] & cpu.registers[reg2];
+  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+}
+
+void bit_xor(byte reg1, byte reg2) {
+  cpu.registers[reg1] = cpu.registers[reg1] ^ cpu.registers[reg2];
+  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+}
+
+void addregs(byte reg1, byte reg2) {
+  int setcarry = 0;
+  cpu.registers[reg1] += cpu.registers[reg2];
+  printf("Set general-purpose register %X to %X, carry flag ", reg1, cpu.registers[reg1]);
+  if (cpu.registers[reg1] > 255) {
+    cpu.registers[0xF] = 1;
+    setcarry = 1;
+  }
+  if (setcarry == 1) {
+    printf("set to 1\n");
+  }
+  else {
+    printf("unchanged\n");
+  }
+}
+
+void subregs(byte reg1, byte reg2) {
+  printf("Carry flag ");
+  if (cpu.registers[reg1] > cpu.registers[reg2]) {
+    cpu.registers[0xF] = 1;
+    printf("set to 1\n");
+  }
+  else {
+    printf("unchanged\n");
+  }
+  cpu.registers[reg1] -= cpu.registers[reg2];
+  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+}
+
+void shr(byte reg) {
+  printf("Carry flag ");
+  if (reg & 1) {
+    cpu.registers[0xF] = 1;
+    printf("set to 1\n");
+  }
+  else {
+    printf("unchanged\n");
+  }
+  cpu.registers[reg] /= 2;
+}
+
+void subnregs(byte reg1, byte reg2) {
+  printf("Carry flag ");
+  if (cpu.registers[reg2] > cpu.registers[reg1]) {
+    cpu.registers[0xF] = 1;
+    printf("set to 1\n");
+  }
+  else {
+    printf("unchanged\n");
+  }
+  cpu.registers[reg1] -= (cpu.registers[reg2] - cpu.registers[reg1]);
+  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+}
+
+void shl(byte reg) {
+  int msb;
+  int bits = sizeof(byte) * 8;
+  msb = 1 << (bits - 1);
+  printf("Carry flag ");
+  if(cpu.registers[reg] & msb) {
+    printf("set to 1\n");
+  }
+  else {
+    printf("unchanged\n");
+  }
+  cpu.registers[reg] *= 2;
+}
+
+void skp(byte reg) {
+  if (isKeyPressed(cpu.registers[reg])) {
+    cpu.pcounter.WORD++;
+    printf("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
+  }
+  else {
+    printf("Key with value %X not pressed, not skipping instruction\n", cpu.registers[reg]);
+  }
+}
+
 void cpu_execute(int mode) {
   byte x;
   byte y;
@@ -149,9 +243,67 @@ void cpu_execute(int mode) {
       printf("0x1%X - JMP to address %X\n", fulloperand, fulloperand);
       jmp(fulloperand);
       break;
+    case 0x30:
+      printf("0x3%X - Skip next instruction if register %X is Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
+      se(operandp1, twodigitoperand2);
+      break;
+    case 0x40:
+      printf("0x4%X - Skip next instruction if register %X is Not Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
+      sne(operandp1, twodigitoperand2);
+      break;
+    case 0x50:
+      printf("0x5%X0 - Skip next instruction if register %X is Equal to %X\n", twodigitoperand1, operandp1, operandp2);
+      seregs(operandp1, operandp2);
+      break;
     case 0x60:
       printf("0x6%X - LD value %X to register %X\n", fulloperand, twodigitoperand2, operandp1);
       ld(operandp1, twodigitoperand2);
+      break;
+    case 0x70:
+      printf("0x7%X - ADD %X to register %X and store in register %X\n", fulloperand, twodigitoperand2, operandp1, operandp1);
+      add(operandp1, twodigitoperand2);
+      break;
+    case 0x80:
+      switch (cpu.operation.BYTE.low & 0xF) {
+        case 0x1:
+          printf("0x8%X1 - Bitwise OR on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
+          bit_or(operandp1, operandp2);
+          break;
+        case 0x2:
+          printf("0x8%X2 - Bitwise AND on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
+          bit_and(operandp1, operandp2);
+          break;
+        case 0x3:
+          printf("0x8%X3 - Bitwise XOR on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
+          bit_xor(operandp1, operandp2);
+          break;
+        case 0x4:
+          printf("0x8%X4 - ADD registers %X and %X and store the result in register %X, set carry flag if needed\n", twodigitoperand1, operandp1, operandp2, operandp1);
+          addregs(operandp1, operandp2);
+          break;
+        case 0x5:
+          printf("0x8%X5 - SUB register %X from %X and store the result in register %X, set carry flag if register %X > %X\n", twodigitoperand1, operandp2, operandp1, operandp1, operandp1, operandp2);
+          subregs(operandp1, operandp2);
+          break;
+        case 0x6:
+          printf("0x8%X6 - SHR register %X and if LSb=1, set carry flag. Then divide by 2\n", twodigitoperand1, operandp1);
+          shr(operandp1);
+          break;
+        case 0x7:
+          printf("0x8%X7 - SUBN register %X from %X and store the result in register %X, set carry flag if register %X < %X\n", twodigitoperand1, operandp1, operandp2, operandp1, operandp1, operandp2);
+          subnregs(operandp1, operandp2);
+          break;
+        case 0xE:
+          printf("0x8%X6 - SHL register %X and if MSb=1, set carry flag. Then multiply by 2\n", twodigitoperand1, operandp1);
+          shl(operandp1);
+          break;
+        default:
+          printf("0xE%X - Wrong opcode\n", fulloperand); // Since all 0x8 opcodes are implemented, an unimplemented instruction would be a wrong one
+          break;
+      }
+    case 0x90:
+      printf("0x9%X0 - Skip next instruction if register %X is Not Equal to register %X \n", twodigitoperand2, operandp1, operandp2);
+      sneregs(operandp1, operandp2);
       break;
     case 0xA0:
       printf("0xA%X - LD value %X to index register\n", fulloperand, fulloperand);
@@ -184,25 +336,13 @@ void cpu_execute(int mode) {
         }
       }
       break;
-    case 0x30:
-      printf("0x3%X - Skip next instruction if register %X is Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
-      se(operandp1, twodigitoperand2);
-      break;
-    case 0x40:
-      printf("0x4%X - Skip next instruction if register %X is Not Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
-      sne(operandp1, twodigitoperand2);
-      break;
-    case 0x50:
-      printf("0x5%X0 - Skip next instruction if register %X is Equal to %X\n", twodigitoperand1, operandp1, operandp2);
-      seregs(operandp1, operandp2);
-      break;
-    case 0x70:
-      printf("0x7%X - ADD %X to register %X and store in that register\n", twodigitoperand2, operandp1);
-      add(operandp1, twodigitoperand2);
-      break;
-    case 0x90:
-      printf("0x9%X0 - Skip next instruction if register %X is Not Equal to register %X \n", twodigitoperand2, operandp1, operandp2);
-      sneregs(operandp1, operandp2);
+    case 0xE0:
+      switch (cpu.operation.BYTE.low) {
+        case 0x9E:
+          printf("0x%X9E - Skip next instruction if key with the value of register %X is pressed\n", twodigitoperand1, operandp1);
+          skp(operandp1);
+          break;
+      }
       break;
     default:
       printf("0x%X - Unimplemented Instruction\n", cpu.operation.WORD);

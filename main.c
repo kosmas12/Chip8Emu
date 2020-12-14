@@ -23,6 +23,7 @@ Parts of the code in this file have been copied from craigthomas' (Super)CHIP-8 
 #include "memory.h"
 #include "cpu.h"
 #include "screen.h"
+#include "input.h"
 #include <string.h>
 
 void emu_init() {
@@ -63,7 +64,6 @@ int main(int argc, char **argv) {
   unsigned int instructionpart1;
   unsigned int instructionpart2;
   int mode = 0;
-  SDL_Event event;
   if(argc > 1) {
     if (strcmp(argv[1], "interactive") == 0) {
       printf("Booting into interactive mode\n");

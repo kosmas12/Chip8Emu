@@ -22,9 +22,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 #ifndef CHIP8EMU_COMMON_H
 #define CHIP8EMU_COMMON_H
 
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+
+SDL_Event event;
 
 typedef unsigned char byte;
 
