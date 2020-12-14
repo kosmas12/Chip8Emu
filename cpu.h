@@ -57,9 +57,14 @@ void subregs(byte reg1, byte reg2);
 void shr(byte reg);
 void subnregs(byte reg1, byte reg2);
 void shl(byte reg);
-void skp(byte reg);
-void sknp(byte reg);
 void call(unsigned int address);
+void stor(byte reg);
+void lddecimal(byte reg);
+void ldfromdt(byte reg);
+void lddt(byte reg);
+void ldst(byte reg);
+void addindex(byte reg);
+void storfrommem(byte reg);
 unsigned int address;
 
 #endif //CHIP8EMU_CPU_H

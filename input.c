@@ -3,6 +3,7 @@
 //
 
 #include "input.h"
+#include "cpu.h"
 
 /* Actual PC keyboard:      Emulated CHIP-8 keyboard:
      1 2 3 4                    1 2 3 C
@@ -52,4 +53,44 @@ int isKeyPressed(byte hexkey) {
     return 1;
   }
   return 0;
+}
+
+void skp(byte reg) {
+  if (isKeyPressed(cpu.registers[reg])) {
+    cpu.pcounter.WORD++;
+    printf("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
+  }
+  else {
+    printf("Key with value %X not pressed, not skipping instruction\n", cpu.registers[reg]);
+  }
+}
+
+void sknp(byte reg) {
+  if (!isKeyPressed(cpu.registers[reg])) {
+    cpu.pcounter.WORD++;
+    printf("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
+  }
+  else {
+    printf("Key with value %X pressed, not skipping instruction\n", cpu.registers[reg]);
+  }
+}
+
+byte checkForPressedKey() {
+  Uint8 *keys = SDL_GetKeyboardState(NULL);
+  for (int i = 0; i < (sizeof(keyMap) / sizeof(struct mappedKey)); ++i) {
+    if (keys[findActualKey(keyMap[i].emuKey)]) {
+      return keyMap[i].emuKey;
+    }
+  }
+  return 0;
+}
+
+void waitForKey(byte reg) {
+  while (SDL_WaitEvent(&event) >= 0) {
+    switch (event.type) {
+      case SDL_KEYDOWN:
+        cpu.registers[reg] = checkForPressedKey();
+        break;
+    }
+  }
 }

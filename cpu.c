@@ -180,26 +180,6 @@ void shl(byte reg) {
   cpu.registers[reg] *= 2;
 }
 
-void skp(byte reg) {
-  if (isKeyPressed(cpu.registers[reg])) {
-    cpu.pcounter.WORD++;
-    printf("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
-  }
-  else {
-    printf("Key with value %X not pressed, not skipping instruction\n", cpu.registers[reg]);
-  }
-}
-
-void sknp(byte reg) {
-  if (!isKeyPressed(cpu.registers[reg])) {
-    cpu.pcounter.WORD++;
-    printf("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
-  }
-  else {
-    printf("Key with value %X pressed, not skipping instruction\n", cpu.registers[reg]);
-  }
-}
-
 void call(unsigned int address) {
   write_memory(cpu.spointer, cpu.pcounter.BYTE.low);
   cpu.spointer.WORD++;
@@ -207,6 +187,63 @@ void call(unsigned int address) {
   cpu.spointer.WORD++;
   cpu.pcounter.WORD = address;
   printf("Set CPU Program Counter to %X\n", address);
+}
+
+void stor(byte reg) {
+  word address;
+  address.WORD = cpu.indexreg.WORD;
+  for (int i = 0; i <= reg; ++i) {
+    write_memory(address, cpu.registers[i]);
+    printf("Wrote value %X to memory address %X\n", memory[(cpu.indexreg.WORD + i)], (cpu.indexreg.WORD + i));
+    address.WORD++;
+  }
+}
+
+void lddecimal(byte reg) {
+  word address;
+  address.WORD = cpu.indexreg.WORD;
+  byte store = cpu.registers[reg] / 100;
+  write_memory(address, store);
+  printf("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
+
+  address.WORD++;
+  store = (cpu.registers[reg] % 100) / 10;
+  write_memory(address, store);
+  printf("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
+
+  address.WORD++;
+  store = (cpu.registers[reg] % 100) % 10;
+  write_memory(address, store);
+  printf("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
+}
+
+void ldfromdt(byte reg) {
+  cpu.registers[reg] = cpu.dtimer;
+  printf("Set general-purpose register %X to %X\n", reg, cpu.registers[reg]);
+}
+
+void lddt(byte reg) {
+  cpu.dtimer = cpu.registers[reg];
+  printf("Set Delay Timer to %X\n", cpu.dtimer);
+}
+
+void ldst(byte reg) {
+  cpu.stimer = cpu.registers[reg];
+  printf("Set Sound Timer to %X\n", cpu.stimer);
+}
+
+void addindex(byte reg) {
+  cpu.indexreg.WORD += cpu.registers[reg];
+  printf("Index register set to %X\n", cpu.indexreg.WORD);
+}
+
+void storfrommem(byte reg) {
+  word address;
+  address.WORD = cpu.indexreg.WORD;
+  for (int i = 0; i <= reg; i++) {
+    cpu.registers[i] = read_memory(address.WORD);
+    address.WORD++;
+  }
 }
 
 void cpu_execute(int mode) {
@@ -368,6 +405,46 @@ void cpu_execute(int mode) {
         case 0xA1:
           printf("0xE%XA1 - SKip next instruction if key with the value of register %X is Not Pressed\n", operandp1, operandp1);
           sknp(operandp1);
+          break;
+      }
+      break;
+    case 0xF0:
+      switch (cpu.operation.BYTE.low) {
+        case 0x07:
+          printf("0xF%X07 - Place value of Delay Timer to register %X\n", operandp1, operandp1);
+          ldfromdt(operandp1);
+          break;
+        case 0x0A:
+          printf("0xF%X0A - Wait until key is pressed and store key to register %X", operandp1);
+          waitForKey(operandp1);
+          break;
+        case 0x15:
+          printf("0xF%X15 - Set Delay Timer to the value of register %X\n", operandp1, operandp1);
+          lddt(operandp1);
+          break;
+        case 0x18:
+          printf("0xF%X18 - Set Sound Timer to the value of register %X\n", operandp1, operandp1);
+          ldst(operandp1);
+          break;
+        case 0x1E:
+          printf("0xF%X1E - ADD the index register to register %X and store in index register\n", operandp1, operandp1);
+          addindex(operandp1);
+          break;
+        case 0x29:
+          printf("0xF%X29 - LD index register with location of sprite %X", operandp1, operandp1);
+          ldi((cpu.registers[operandp1] * 5));
+          break;
+        case 0x33:
+          printf("0xF%X33 - LD decimal hundreds digit of register %X in location index, tens in index i + 1, ones in i + 2\n", operandp1, operandp1);
+          lddecimal(operandp1);
+          break;
+        case 0x55:
+          printf("0xF%X55 - STOR registers 0 through %X to memory starting from the location pointed to by the index register\n", operandp1, operandp1);
+          stor(operandp1);
+          break;
+        case 0x65:
+          printf("0xF%X55 - STOR to registers 0 through %X from memory starting from the location pointed to by the index register\n", operandp1, operandp1);
+          storfrommem(operandp1);
           break;
       }
       break;
