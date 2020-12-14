@@ -36,7 +36,6 @@ byte read_memory(register int address) {
 }
 
 void write_memory(register word address, register byte value) {
-  value = (value>>8) | (value<<8);
   memory[address.WORD] = value;
 }
 

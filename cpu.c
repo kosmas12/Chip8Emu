@@ -200,6 +200,15 @@ void sknp(byte reg) {
   }
 }
 
+void call(unsigned int address) {
+  write_memory(cpu.spointer, cpu.pcounter.BYTE.low);
+  cpu.spointer.WORD++;
+  write_memory(cpu.spointer, cpu.pcounter.BYTE.high);
+  cpu.spointer.WORD++;
+  cpu.pcounter.WORD = address;
+  printf("Set CPU Program Counter to %X\n", address);
+}
+
 void cpu_execute(int mode) {
   byte x;
   byte y;
@@ -245,13 +254,17 @@ void cpu_execute(int mode) {
           ret();
           break;
         default:
-          printf("0x00%X%X - Unimplemented Instruction\n", operandp2, operandp3);
+          printf("0x0%X - Unimplemented instruction\n", fulloperand);
           break;
       }
       break;
     case 0x10:
       printf("0x1%X - JMP to address %X\n", fulloperand, fulloperand);
       jmp(fulloperand);
+      break;
+    case 0x20:
+      printf("0x2%X - CALL subroutine in address %X\n", fulloperand, fulloperand);
+      call(fulloperand);
       break;
     case 0x30:
       printf("0x3%X - Skip next instruction if register %X is Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
