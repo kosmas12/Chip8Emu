@@ -246,6 +246,16 @@ void storfrommem(byte reg) {
   }
 }
 
+void ldregs(byte reg1, byte reg2) {
+  cpu.registers[reg1] = cpu.registers[reg2];
+  printf("Set general-purpose register %X to value %X\n", reg1, cpu.registers[reg1]);
+}
+
+void rndand(byte reg, byte value) {
+  cpu.registers[reg] = (rand() % 255) & value;
+  printf("Set general-purpose register %X to %X\n", reg, cpu.registers[reg]);
+}
+
 void cpu_execute(int mode) {
   byte x;
   byte y;
@@ -291,7 +301,8 @@ void cpu_execute(int mode) {
           ret();
           break;
         default:
-          printf("0x0%X - Unimplemented instruction\n", fulloperand);
+          printf("0x0%X - SYS - Jump to machine code routine in address\n", fulloperand);
+          jmp(fulloperand);
           break;
       }
       break;
@@ -325,6 +336,10 @@ void cpu_execute(int mode) {
       break;
     case 0x80:
       switch (cpu.operation.BYTE.low & 0xF) {
+        case 0x0:
+          printf("0x8%X0 - LD register %X with value of register %X", twodigitoperand1, operandp1, operandp2);
+          ldregs(operandp1, operandp2);
+          break;
         case 0x1:
           printf("0x8%X1 - Bitwise OR on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
           bit_or(operandp1, operandp2);
@@ -368,6 +383,14 @@ void cpu_execute(int mode) {
     case 0xA0:
       printf("0xA%X - LD value %X to index register\n", fulloperand, fulloperand);
       ldi(fulloperand);
+      break;
+    case 0xB0:
+      printf("0xB%X - JMP to address %X + value in register 0", fulloperand, fulloperand);
+      jmp(fulloperand + cpu.registers[0]);
+      break;
+    case 0xC0:
+      printf("0xC%X - Generate a random number from 0 to 255, AND it with %X, and store in %X\n", fulloperand, twodigitoperand2, operandp1);
+      rndand(operandp1, twodigitoperand2);
       break;
     case 0xD0:
       x = cpu.operation.BYTE.high & 0xF;
@@ -415,7 +438,7 @@ void cpu_execute(int mode) {
           ldfromdt(operandp1);
           break;
         case 0x0A:
-          printf("0xF%X0A - Wait until key is pressed and store key to register %X", operandp1);
+          printf("0xF%X0A - Wait until key is pressed and store key to register %X", operandp1, operandp1);
           waitForKey(operandp1);
           break;
         case 0x15:

@@ -78,7 +78,7 @@ void sknp(byte reg) {
 }
 
 byte checkForPressedKey() {
-  Uint8 *keys = SDL_GetKeyboardState(NULL);
+  const Uint8 *keys = SDL_GetKeyboardState(NULL);
   for (int i = 0; i < (sizeof(keyMap) / sizeof(struct mappedKey)); ++i) {
     if (keys[findActualKey(keyMap[i].emuKey)]) {
       return keyMap[i].emuKey;
