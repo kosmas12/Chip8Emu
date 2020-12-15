@@ -256,6 +256,16 @@ void rndand(byte reg, byte value) {
   printf("Set general-purpose register %X to %X\n", reg, cpu.registers[reg]);
 }
 
+Uint32 dec_timers(Uint32 delay) {
+  if (cpu.dtimer > 0) {
+    cpu.dtimer--;
+  }
+  if (cpu.stimer > 0) {
+    cpu.stimer--;
+  }
+  return delay;
+}
+
 void cpu_execute(int mode) {
   byte x;
   byte y;
@@ -273,6 +283,8 @@ void cpu_execute(int mode) {
   int ycor;
 
   cpu.prevpcounter = cpu.pcounter;
+  cpu.dtimer = 240;
+  cpu.stimer = 300;
 
   if (mode == 0) {
     cpu.operation.BYTE.high = read_memory(cpu.pcounter.WORD);

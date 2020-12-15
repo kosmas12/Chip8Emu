@@ -27,7 +27,10 @@ Parts of the code in this file have been copied from craigthomas' (Super)CHIP-8 
 #include <string.h>
 
 void emu_init() {
+  Uint32 *parameter = malloc(sizeof(Uint32));
+  *parameter = 1000/60;
   cpu_reset();
+  dtimer = SDL_AddTimer((1000 / 60), dec_timers, parameter);
   memory_init(4096);
   screen_init();
 }

@@ -67,6 +67,7 @@ void addindex(byte reg);
 void storfrommem(byte reg);
 void ldregs(byte reg1, byte reg2);
 void rndand(byte reg, byte value);
+Uint32 dec_timers();
 unsigned int address;
 
 #endif //CHIP8EMU_CPU_H
