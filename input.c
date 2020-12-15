@@ -37,6 +37,7 @@ byte findEmuKey(SDL_Keycode keycode) {
       return keyMap[i].emuKey;
     }
   }
+  return 0;
 }
 
 SDL_Keycode findActualKey(byte hexkey) {
@@ -45,6 +46,7 @@ SDL_Keycode findActualKey(byte hexkey) {
       return keyMap[i].actualKey;
     }
   }
+  return SDLK_SPACE;
 }
 
 int isKeyPressed(byte hexkey) {
