@@ -60,20 +60,20 @@ int isKeyPressed(byte hexkey) {
 void skp(byte reg) {
   if (isKeyPressed(cpu.registers[reg])) {
     cpu.pcounter.WORD++;
-    printf("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
+    OUTPUT("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
   }
   else {
-    printf("Key with value %X not pressed, not skipping instruction\n", cpu.registers[reg]);
+    OUTPUT("Key with value %X not pressed, not skipping instruction\n", cpu.registers[reg]);
   }
 }
 
 void sknp(byte reg) {
   if (!isKeyPressed(cpu.registers[reg])) {
     cpu.pcounter.WORD++;
-    printf("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
+    OUTPUT("Set CPU Program Counter to address %X\n", cpu.pcounter.WORD);
   }
   else {
-    printf("Key with value %X pressed, not skipping instruction\n", cpu.registers[reg]);
+    OUTPUT("Key with value %X pressed, not skipping instruction\n", cpu.registers[reg]);
   }
 }
 

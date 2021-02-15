@@ -39,143 +39,143 @@ void ret() {
 
 void jmp(unsigned int address) {
   cpu.pcounter.WORD = address;
-  printf("CPU Program Counter set to address %X\n", address);
+  OUTPUT("CPU Program Counter set to address %X\n", address);
 }
 
 void ld(byte reg, byte value) {
     cpu.registers[reg] = value;
-    printf("Set general-purpose register %X to %X\n", reg, value);
+    OUTPUT("Set general-purpose register %X to %X\n", reg, value);
 }
 
 void ldi(unsigned short value) {
   cpu.indexreg.WORD = value;
-  printf("Set index register to %X\n", value);
+  OUTPUT("Set index register to %X\n", value);
 }
 
 void se(byte reg, byte value) {
   if (cpu.registers[reg] == value) {
     cpu.pcounter.WORD+=2;
-    printf("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
+    OUTPUT("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
   }
   else {
-    printf("Values not equal, not skipping instruction\n");
+    OUTPUT("Values not equal, not skipping instruction\n");
   }
 }
 
 void sne(byte reg, byte value) {
   if (cpu.registers[reg] != value) {
     cpu.pcounter.WORD+=2;
-    printf("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
+    OUTPUT("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
   }
   else {
-    printf("Values equal, not skipping instruction\n");
+    OUTPUT("Values equal, not skipping instruction\n");
   }
 }
 
 void seregs(byte reg1, byte reg2) {
   if (cpu.registers[reg1] == cpu.registers[reg2]) {
     cpu.pcounter.WORD+=2;
-    printf("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
+    OUTPUT("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
   }
   else {
-    printf("Registers not equal, not skipping instruction\n");
+    OUTPUT("Registers not equal, not skipping instruction\n");
   }
 }
 
 void add(byte reg, byte value) {
   cpu.registers[reg] += value;
-  printf("Register %X now set to %X\n", reg, cpu.registers[reg]);
+  OUTPUT("Register %X now set to %X\n", reg, cpu.registers[reg]);
 }
 
 void sneregs(byte reg1, byte reg2) {
   if (cpu.registers[reg1] != cpu.registers[reg2]) {
     cpu.pcounter.WORD+=2;
-    printf("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
+    OUTPUT("CPU Program Counter set to address %X\n", cpu.pcounter.WORD);
   }
   else {
-    printf("Registers equal, not skipping instruction\n");
+    OUTPUT("Registers equal, not skipping instruction\n");
   }
 }
 
 void bit_or(byte reg1, byte reg2) {
   cpu.registers[reg1] = cpu.registers[reg1] | cpu.registers[reg2];
-  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+  OUTPUT("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
 }
 
 void bit_and(byte reg1, byte reg2) {
   cpu.registers[reg1] = cpu.registers[reg1] & cpu.registers[reg2];
-  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+  OUTPUT("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
 }
 
 void bit_xor(byte reg1, byte reg2) {
   cpu.registers[reg1] = cpu.registers[reg1] ^ cpu.registers[reg2];
-  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+  OUTPUT("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
 }
 
 void addregs(byte reg1, byte reg2) {
   int setcarry = 0;
   cpu.registers[reg1] += cpu.registers[reg2];
-  printf("Set general-purpose register %X to %X, carry flag ", reg1, cpu.registers[reg1]);
+  OUTPUT("Set general-purpose register %X to %X, carry flag ", reg1, cpu.registers[reg1]);
   if (cpu.registers[reg1] > 255) {
     cpu.registers[0xF] = 1;
     setcarry = 1;
   }
   if (setcarry == 1) {
-    printf("set to 1\n");
+    OUTPUT("set to 1\n");
   }
   else {
-    printf("unchanged\n");
+    OUTPUT("unchanged\n");
   }
 }
 
 void subregs(byte reg1, byte reg2) {
-  printf("Carry flag ");
+  OUTPUT("Carry flag ");
   if (cpu.registers[reg1] > cpu.registers[reg2]) {
     cpu.registers[0xF] = 1;
-    printf("set to 1\n");
+    OUTPUT("set to 1\n");
   }
   else {
-    printf("unchanged\n");
+    OUTPUT("unchanged\n");
   }
   cpu.registers[reg1] -= cpu.registers[reg2];
-  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+  OUTPUT("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
 }
 
 void shr(byte reg) {
-  printf("Carry flag ");
+  OUTPUT("Carry flag ");
   if (reg & 1) {
     cpu.registers[0xF] = 1;
-    printf("set to 1\n");
+    OUTPUT("set to 1\n");
   }
   else {
-    printf("unchanged\n");
+    OUTPUT("unchanged\n");
   }
   cpu.registers[reg] /= 2;
 }
 
 void subnregs(byte reg1, byte reg2) {
-  printf("Carry flag ");
+  OUTPUT("Carry flag ");
   if (cpu.registers[reg2] > cpu.registers[reg1]) {
     cpu.registers[0xF] = 1;
-    printf("set to 1\n");
+    OUTPUT("set to 1\n");
   }
   else {
-    printf("unchanged\n");
+    OUTPUT("unchanged\n");
   }
   cpu.registers[reg1] -= (cpu.registers[reg2] - cpu.registers[reg1]);
-  printf("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
+  OUTPUT("Set general-purpose register %X to %X\n", reg1, cpu.registers[reg1]);
 }
 
 void shl(byte reg) {
   int msb;
   int bits = sizeof(byte) * 8;
   msb = 1 << (bits - 1);
-  printf("Carry flag ");
+  OUTPUT("Carry flag ");
   if(cpu.registers[reg] & msb) {
-    printf("set to 1\n");
+    OUTPUT("set to 1\n");
   }
   else {
-    printf("unchanged\n");
+    OUTPUT("unchanged\n");
   }
   cpu.registers[reg] *= 2;
 }
@@ -186,7 +186,7 @@ void call(unsigned int address) {
   write_memory(cpu.spointer, cpu.pcounter.BYTE.high);
   cpu.spointer.WORD++;
   cpu.pcounter.WORD = address;
-  printf("Set CPU Program Counter to %X\n", address);
+  OUTPUT("Set CPU Program Counter to %X\n", address);
 }
 
 void stor(byte reg) {
@@ -194,7 +194,7 @@ void stor(byte reg) {
   address.WORD = cpu.indexreg.WORD;
   for (int i = 0; i <= reg; ++i) {
     write_memory(address, cpu.registers[i]);
-    printf("Wrote value %X to memory address %X\n", memory[(cpu.indexreg.WORD + i)], (cpu.indexreg.WORD + i));
+    OUTPUT("Wrote value %X to memory address %X\n", memory[(cpu.indexreg.WORD + i)], (cpu.indexreg.WORD + i));
     address.WORD++;
   }
 }
@@ -204,37 +204,37 @@ void lddecimal(byte reg) {
   address.WORD = cpu.indexreg.WORD;
   byte store = cpu.registers[reg] / 100;
   write_memory(address, store);
-  printf("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
+  OUTPUT("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
 
   address.WORD++;
   store = (cpu.registers[reg] % 100) / 10;
   write_memory(address, store);
-  printf("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
+  OUTPUT("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
 
   address.WORD++;
   store = (cpu.registers[reg] % 100) % 10;
   write_memory(address, store);
-  printf("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
+  OUTPUT("Stored value %X in memory address %X\n", store, cpu.indexreg.WORD);
 }
 
 void ldfromdt(byte reg) {
   cpu.registers[reg] = cpu.dtimer;
-  printf("Set general-purpose register %X to %X\n", reg, cpu.registers[reg]);
+  OUTPUT("Set general-purpose register %X to %X\n", reg, cpu.registers[reg]);
 }
 
 void lddt(byte reg) {
   cpu.dtimer = cpu.registers[reg];
-  printf("Set Delay Timer to %X\n", cpu.dtimer);
+  OUTPUT("Set Delay Timer to %X\n", cpu.dtimer);
 }
 
 void ldst(byte reg) {
   cpu.stimer = cpu.registers[reg];
-  printf("Set Sound Timer to %X\n", cpu.stimer);
+  OUTPUT("Set Sound Timer to %X\n", cpu.stimer);
 }
 
 void addindex(byte reg) {
   cpu.indexreg.WORD += cpu.registers[reg];
-  printf("Index register set to %X\n", cpu.indexreg.WORD);
+  OUTPUT("Index register set to %X\n", cpu.indexreg.WORD);
 }
 
 void storfrommem(byte reg) {
@@ -248,12 +248,12 @@ void storfrommem(byte reg) {
 
 void ldregs(byte reg1, byte reg2) {
   cpu.registers[reg1] = cpu.registers[reg2];
-  printf("Set general-purpose register %X to value %X\n", reg1, cpu.registers[reg1]);
+  OUTPUT("Set general-purpose register %X to value %X\n", reg1, cpu.registers[reg1]);
 }
 
 void rndand(byte reg, byte value) {
   cpu.registers[reg] = (rand() % 255) & value;
-  printf("Set general-purpose register %X to %X\n", reg, cpu.registers[reg]);
+  OUTPUT("Set general-purpose register %X to %X\n", reg, cpu.registers[reg]);
 }
 
 Uint32 dec_timers(Uint32 delay) {
@@ -284,7 +284,7 @@ void cpu_execute(int mode) {
 
   cpu.prevpcounter = cpu.pcounter;
   cpu.dtimer = 240;
-  cpu.stimer = 300;
+  cpu.stimer = 2;
 
   if (mode == 0) {
     cpu.operation.BYTE.high = read_memory(cpu.pcounter.WORD);
@@ -300,108 +300,108 @@ void cpu_execute(int mode) {
   unsigned int twodigitoperand1 = (cpu.operation.WORD & 0x0FF0) / 0x10;
   unsigned int twodigitoperand2 = cpu.operation.WORD & 0x00FF;
 
-  printf("Executing instruction ");
+  OUTPUT("Executing instruction ");
   switch (cpu.operation.BYTE.high & 0xF0) {
     case 0x00:
       switch (cpu.operation.BYTE.low) {
         case 0xE0:
-          printf("0x00E0 - CLS\n");
+          OUTPUT("0x00E0 - CLS\n");
           clear_screen();
           break;
         case 0xEE:
-          printf("0x00EE - RET\n");
+          OUTPUT("0x00EE - RET\n");
           ret();
           break;
         default:
-          printf("0x0%X - SYS - Jump to machine code routine in address\n", fulloperand);
+          OUTPUT("0x0%X - SYS - Jump to machine code routine in address\n", fulloperand);
           jmp(fulloperand);
           break;
       }
       break;
     case 0x10:
-      printf("0x1%X - JMP to address %X\n", fulloperand, fulloperand);
+      OUTPUT("0x1%X - JMP to address %X\n", fulloperand, fulloperand);
       jmp(fulloperand);
       break;
     case 0x20:
-      printf("0x2%X - CALL subroutine in address %X\n", fulloperand, fulloperand);
+      OUTPUT("0x2%X - CALL subroutine in address %X\n", fulloperand, fulloperand);
       call(fulloperand);
       break;
     case 0x30:
-      printf("0x3%X - Skip next instruction if register %X is Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
+      OUTPUT("0x3%X - Skip next instruction if register %X is Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
       se(operandp1, twodigitoperand2);
       break;
     case 0x40:
-      printf("0x4%X - Skip next instruction if register %X is Not Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
+      OUTPUT("0x4%X - Skip next instruction if register %X is Not Equal to %X\n", fulloperand, operandp1, twodigitoperand2);
       sne(operandp1, twodigitoperand2);
       break;
     case 0x50:
-      printf("0x5%X0 - Skip next instruction if register %X is Equal to %X\n", twodigitoperand1, operandp1, operandp2);
+      OUTPUT("0x5%X0 - Skip next instruction if register %X is Equal to %X\n", twodigitoperand1, operandp1, operandp2);
       seregs(operandp1, operandp2);
       break;
     case 0x60:
-      printf("0x6%X - LD value %X to register %X\n", fulloperand, twodigitoperand2, operandp1);
+      OUTPUT("0x6%X - LD value %X to register %X\n", fulloperand, twodigitoperand2, operandp1);
       ld(operandp1, twodigitoperand2);
       break;
     case 0x70:
-      printf("0x7%X - ADD %X to register %X and store in register %X\n", fulloperand, twodigitoperand2, operandp1, operandp1);
+      OUTPUT("0x7%X - ADD %X to register %X and store in register %X\n", fulloperand, twodigitoperand2, operandp1, operandp1);
       add(operandp1, twodigitoperand2);
       break;
     case 0x80:
       switch (cpu.operation.BYTE.low & 0xF) {
         case 0x0:
-          printf("0x8%X0 - LD register %X with value of register %X", twodigitoperand1, operandp1, operandp2);
+          OUTPUT("0x8%X0 - LD register %X with value of register %X", twodigitoperand1, operandp1, operandp2);
           ldregs(operandp1, operandp2);
           break;
         case 0x1:
-          printf("0x8%X1 - Bitwise OR on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
+          OUTPUT("0x8%X1 - Bitwise OR on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
           bit_or(operandp1, operandp2);
           break;
         case 0x2:
-          printf("0x8%X2 - Bitwise AND on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
+          OUTPUT("0x8%X2 - Bitwise AND on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
           bit_and(operandp1, operandp2);
           break;
         case 0x3:
-          printf("0x8%X3 - Bitwise XOR on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
+          OUTPUT("0x8%X3 - Bitwise XOR on registers %X and %X and store the result in register %X\n", twodigitoperand1, operandp1, operandp2, operandp1);
           bit_xor(operandp1, operandp2);
           break;
         case 0x4:
-          printf("0x8%X4 - ADD registers %X and %X and store the result in register %X, set carry flag if needed\n", twodigitoperand1, operandp1, operandp2, operandp1);
+          OUTPUT("0x8%X4 - ADD registers %X and %X and store the result in register %X, set carry flag if needed\n", twodigitoperand1, operandp1, operandp2, operandp1);
           addregs(operandp1, operandp2);
           break;
         case 0x5:
-          printf("0x8%X5 - SUB register %X from %X and store the result in register %X, set carry flag if register %X > %X\n", twodigitoperand1, operandp2, operandp1, operandp1, operandp1, operandp2);
+          OUTPUT("0x8%X5 - SUB register %X from %X and store the result in register %X, set carry flag if register %X > %X\n", twodigitoperand1, operandp2, operandp1, operandp1, operandp1, operandp2);
           subregs(operandp1, operandp2);
           break;
         case 0x6:
-          printf("0x8%X6 - SHR register %X and if LSb=1, set carry flag. Then divide by 2\n", twodigitoperand1, operandp1);
+          OUTPUT("0x8%X6 - SHR register %X and if LSb=1, set carry flag. Then divide by 2\n", twodigitoperand1, operandp1);
           shr(operandp1);
           break;
         case 0x7:
-          printf("0x8%X7 - SUBN register %X from %X and store the result in register %X, set carry flag if register %X < %X\n", twodigitoperand1, operandp1, operandp2, operandp1, operandp1, operandp2);
+          OUTPUT("0x8%X7 - SUBN register %X from %X and store the result in register %X, set carry flag if register %X < %X\n", twodigitoperand1, operandp1, operandp2, operandp1, operandp1, operandp2);
           subnregs(operandp1, operandp2);
           break;
         case 0xE:
-          printf("0x8%X6 - SHL register %X and if MSb=1, set carry flag. Then multiply by 2\n", twodigitoperand1, operandp1);
+          OUTPUT("0x8%X6 - SHL register %X and if MSb=1, set carry flag. Then multiply by 2\n", twodigitoperand1, operandp1);
           shl(operandp1);
           break;
         default:
-          printf("0xE%X - Wrong opcode\n", fulloperand); // Since all 0x8 opcodes are implemented, an unimplemented instruction would be a wrong one
+          OUTPUT("0xE%X - Wrong opcode\n", fulloperand); // Since all 0x8 opcodes are implemented, an unimplemented instruction would be a wrong one
           break;
       }
     case 0x90:
-      printf("0x9%X0 - Skip next instruction if register %X is Not Equal to register %X \n", twodigitoperand2, operandp1, operandp2);
+      OUTPUT("0x9%X0 - Skip next instruction if register %X is Not Equal to register %X \n", twodigitoperand2, operandp1, operandp2);
       sneregs(operandp1, operandp2);
       break;
     case 0xA0:
-      printf("0xA%X - LD value %X to index register\n", fulloperand, fulloperand);
+      OUTPUT("0xA%X - LD value %X to index register\n", fulloperand, fulloperand);
       ldi(fulloperand);
       break;
     case 0xB0:
-      printf("0xB%X - JMP to address %X + value in register 0", fulloperand, fulloperand);
+      OUTPUT("0xB%X - JMP to address %X + value in register 0", fulloperand, fulloperand);
       jmp(fulloperand + cpu.registers[0]);
       break;
     case 0xC0:
-      printf("0xC%X - Generate a random number from 0 to 255, AND it with %X, and store in %X\n", fulloperand, twodigitoperand2, operandp1);
+      OUTPUT("0xC%X - Generate a random number from 0 to 255, AND it with %X, and store in %X\n", fulloperand, twodigitoperand2, operandp1);
       rndand(operandp1, twodigitoperand2);
       break;
     case 0xD0:
@@ -410,7 +410,7 @@ void cpu_execute(int mode) {
       tempw.WORD = cpu.indexreg.WORD;
       tempb = cpu.operation.BYTE.low & 0xF;
       cpu.registers[0xF] = 0;
-      printf("0xD%X - DRW %d-byte sprite at location x %d and y %d\n", fulloperand, operandp3, operandp1, operandp2);
+      OUTPUT("0xD%X - DRW %d-byte sprite at location x %d and y %d\n", fulloperand, operandp3, operandp1, operandp2);
       for (i = 0; i < (cpu.operation.BYTE.low & 0xF); i++) {
         tempb = read_memory(cpu.indexreg.WORD + i);
         ycor = cpu.registers[y] + i;
@@ -434,11 +434,11 @@ void cpu_execute(int mode) {
     case 0xE0:
       switch (cpu.operation.BYTE.low & 0xFF) {
         case 0x9E:
-          printf("0xE%X9E - SKip next instruction if key with the value of register %X is Pressed\n", operandp1, operandp1);
+          OUTPUT("0xE%X9E - SKip next instruction if key with the value of register %X is Pressed\n", operandp1, operandp1);
           skp(operandp1);
           break;
         case 0xA1:
-          printf("0xE%XA1 - SKip next instruction if key with the value of register %X is Not Pressed\n", operandp1, operandp1);
+          OUTPUT("0xE%XA1 - SKip next instruction if key with the value of register %X is Not Pressed\n", operandp1, operandp1);
           sknp(operandp1);
           break;
       }
@@ -446,83 +446,83 @@ void cpu_execute(int mode) {
     case 0xF0:
       switch (cpu.operation.BYTE.low) {
         case 0x07:
-          printf("0xF%X07 - Place value of Delay Timer to register %X\n", operandp1, operandp1);
+          OUTPUT("0xF%X07 - Place value of Delay Timer to register %X\n", operandp1, operandp1);
           ldfromdt(operandp1);
           break;
         case 0x0A:
-          printf("0xF%X0A - Wait until key is pressed and store key to register %X", operandp1, operandp1);
+          OUTPUT("0xF%X0A - Wait until key is pressed and store key to register %X", operandp1, operandp1);
           waitForKey(operandp1);
           break;
         case 0x15:
-          printf("0xF%X15 - Set Delay Timer to the value of register %X\n", operandp1, operandp1);
+          OUTPUT("0xF%X15 - Set Delay Timer to the value of register %X\n", operandp1, operandp1);
           lddt(operandp1);
           break;
         case 0x18:
-          printf("0xF%X18 - Set Sound Timer to the value of register %X\n", operandp1, operandp1);
+          OUTPUT("0xF%X18 - Set Sound Timer to the value of register %X\n", operandp1, operandp1);
           ldst(operandp1);
           break;
         case 0x1E:
-          printf("0xF%X1E - ADD the index register to register %X and store in index register\n", operandp1, operandp1);
+          OUTPUT("0xF%X1E - ADD the index register to register %X and store in index register\n", operandp1, operandp1);
           addindex(operandp1);
           break;
         case 0x29:
-          printf("0xF%X29 - LD index register with location of sprite %X", operandp1, operandp1);
+          OUTPUT("0xF%X29 - LD index register with location of sprite %X", operandp1, operandp1);
           ldi((cpu.registers[operandp1] * 5));
           break;
         case 0x33:
-          printf("0xF%X33 - LD decimal hundreds digit of register %X in location index, tens in index i + 1, ones in i + 2\n", operandp1, operandp1);
+          OUTPUT("0xF%X33 - LD decimal hundreds digit of register %X in location index, tens in index i + 1, ones in i + 2\n", operandp1, operandp1);
           lddecimal(operandp1);
           break;
         case 0x55:
-          printf("0xF%X55 - STOR registers 0 through %X to memory starting from the location pointed to by the index register\n", operandp1, operandp1);
+          OUTPUT("0xF%X55 - STOR registers 0 through %X to memory starting from the location pointed to by the index register\n", operandp1, operandp1);
           stor(operandp1);
           break;
         case 0x65:
-          printf("0xF%X55 - STOR to registers 0 through %X from memory starting from the location pointed to by the index register\n", operandp1, operandp1);
+          OUTPUT("0xF%X55 - STOR to registers 0 through %X from memory starting from the location pointed to by the index register\n", operandp1, operandp1);
           storfrommem(operandp1);
           break;
       }
       break;
     default:
-      printf("0x%X - Unimplemented Instruction\n", cpu.operation.WORD);
+      OUTPUT("0x%X - Unimplemented Instruction\n", cpu.operation.WORD);
       break;
   }
 }
 
 void indexreg_init() {
   cpu.indexreg.WORD = 0;
-  printf("Set index register to 0\n");
+  OUTPUT("Set index register to 0\n");
 }
 
 void timers_init() {
   cpu.dtimer = 0;
-  printf("Set delay timer to 0\n");
+  OUTPUT("Set delay timer to 0\n");
   cpu.stimer = 0;
-  printf("Set sound timer to 0\n");
+  OUTPUT("Set sound timer to 0\n");
 }
 
 void spointer_init() {
   cpu.spointer.WORD = 0x52;
-  printf("Set Stack Pointer to 0x52 (start)\n");
+  OUTPUT("Set Stack Pointer to 0x52 (start)\n");
 }
 
 void pcounter_init() {
   cpu.pcounter.WORD = 0x200;
   cpu.prevpcounter.WORD = 0x200;
-  printf("Set Program Counter to 0x200 (start)\n");
+  OUTPUT("Set Program Counter to 0x200 (start)\n");
 }
 
 void rpl_init() {
   for (int i = 0; i < 16; ++i) {
     cpu.rplregstorage[i] = 0;
-    printf("Set RPL Register Storage %X to 0\n", i);
+    OUTPUT("Set RPL Register Storage %X to 0\n", i);
   }
 }
 
 void cpu_reset() {
   for (int i = 0; i < 16; ++i) {
     cpu.registers[i] = 0;
-    printf("Set general purpose register %X to 0\n", i);
+    OUTPUT("Set general purpose register %X to 0\n", i);
   }
   rpl_init();
   spointer_init();

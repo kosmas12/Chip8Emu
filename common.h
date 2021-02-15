@@ -30,6 +30,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.*
 SDL_Event event;
 SDL_TimerID dtimer;
 SDL_TimerID stimer;
+SDL_AudioDeviceID deviceId;
+
+#ifndef DEBUG
+#define OUTPUT(x...)
+#else
+#define OUTPUT(x...) printf(x)
+#endif
 
 typedef unsigned char byte;
 

@@ -37,11 +37,8 @@ Uint32 Amask = 0xff000000;
 #define WHITE SDL_MapRGB(screenDrawingSurface->format, 255, 255, 255)
 #define BLACK SDL_MapRGB(screenDrawingSurface->format, 0, 0, 0)
 
-SDL_Window *emuWindow;
-
 // For now do nothing other than fill the virtual screen with white
 void screen_init() {
-  SDL_Init(SDL_INIT_EVERYTHING);
   emuWindow = SDL_CreateWindow("Chip8Emu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
   emuWindowSurface = SDL_GetWindowSurface(emuWindow);
   screenDrawingSurface = SDL_CreateRGBSurface(0, 64, 32, 32, Rmask, Gmask, Bmask, Amask); // Will be used to render

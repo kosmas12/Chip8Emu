@@ -22,16 +22,25 @@ like the implementation of the DRW instruction.
 
 # Compiling
 To compile, you need CMake. Any compiler that CMake supports (pretty much
-every C/C++ compiler) will do. 
+every C/C++ compiler) will do.
 
-While most of the code is written
-purely using the standard C library, Chip8Emu also requires SDL2, which
-is used for the graphics. Then, to compile:
+While most of the code is written purely using the standard C library, 
+Chip8Emu also requires SDL2, which  is used for the graphics and input.
+Then, to compile:
 
 ```
 mkdir build
 cd build
 cmake ..
+make
+```
+
+Or to compile in debug mode with verbose output for what the CPU does:
+
+```
+mkdir build
+cd build
+cmake .. -DUSE_DEBUG=1
 make
 ```
 

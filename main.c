@@ -27,12 +27,17 @@ Parts of the code in this file have been copied from craigthomas' (Super)CHIP-8 
 #include <string.h>
 
 void emu_init() {
-  Uint32 *parameter = malloc(sizeof(Uint32));
+  SDL_Init(SDL_INIT_EVERYTHING);
+  Uint32 *parameter = (Uint32 *) malloc(sizeof(Uint32));
   *parameter = 1000/60;
   cpu_reset();
   dtimer = SDL_AddTimer((1000 / 60), dec_timers, parameter);
   memory_init(4096);
   screen_init();
+  SDL_AudioSpec wavSpec;
+  Uint32 wavLength;
+  Uint8 *wavBuffer;
+
 }
 
 void Quit() {
@@ -86,7 +91,6 @@ int main(int argc, char **argv) {
       if(argc > 1) {
         if (strcmp(argv[1], "interactive") == 0) {
           mode = 1;
-          //TODO: Make it run parallel to PollEvent()
           scanf("%X", &instructionpart1);
           scanf("%X", &instructionpart2);
           cpu.operation.BYTE.high = instructionpart1;
