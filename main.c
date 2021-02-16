@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-Parts of the code in this file have been copied from craigthomas' (Super)CHIP-8 emulator which can be found in https://github.com/craigthomas/Chip8C*/
-
+Parts of the code in this file have been copied from craigthomas' (Super)CHIP-8 emulator which can be found in https://github.com/craigthomas/Chip8C
+*/
 
 #include "memory.h"
 #include "cpu.h"
@@ -34,9 +34,6 @@ void emu_init() {
   dtimer = SDL_AddTimer((1000 / 60), dec_timers, parameter);
   memory_init(4096);
   screen_init();
-  SDL_AudioSpec wavSpec;
-  Uint32 wavLength;
-  Uint8 *wavBuffer;
 
 }
 
@@ -76,11 +73,19 @@ int main(int argc, char **argv) {
     if (strcmp(argv[1], "interactive") == 0) {
       printf("Booting into interactive mode\n");
     }
+    else {
+        printf("Booting into ROM mode with ROM file %s\n", argv[1]);
+        int status = load_rom(argv[1], 0x200);
+        if (status == 0) {
+            exit(1);
+        }
+    }
   }
   else {
-    printf("Booting into ROM mode\n");
-    load_rom("test_opcode.ch8", 0x200);
+      printf("No ROM specified and no interactive mode flag. Exiting...\n");
+      exit(0);
   }
+
   while (1) {
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
