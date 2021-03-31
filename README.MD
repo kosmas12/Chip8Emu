@@ -46,7 +46,9 @@ make
 
 # Using
 When running the emulator with no command line arguments, the
-emulator will load a ROM specified in the load_rom() call in main()
+emulator will exit.
+
+When running it with a path to a ROM, the emulator load the ROM 
 and it will then start executing it from virtual memory address 0x200.
 
 If you run the emulator with the `interactive` command line
